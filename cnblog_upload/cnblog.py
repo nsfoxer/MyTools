@@ -129,7 +129,7 @@ class Config:
         for blog in self.blogsInfo:
             if blog["title"] != title:
                 continue
-            print(blog)
+            # print(blog)
             if len(blog["categories"]) == len(categories):
                 for cate in categories:
                     if cate not in blog["categories"]:
@@ -287,7 +287,8 @@ def init_arg():
             epilog="程序将扫描指定的路径，指定路径位置深度0，忽略深度不足的文件，选择所有非隐藏文件夹下的md(markdown)文档上传。\n程序从足够深度的位置开始，将文件的文件夹路径视为标签上传。具有相同文件名和相同标签的文件被视为同一文件。具体请看README.md。")
     parser.add_argument('-d', '--depth', type=int, help="category start serial", default=0, nargs=1)
     parser.add_argument("location", type=str, default="./", nargs=1)
-    args = parser.parse_args(["-d", "0", "/home/nsfoxer/Documents/articles"])
+    # args = parser.parse_args(["-d", "0", "/home/nsfoxer/Documents/articles"])
+    args = parser.parse_args()
     return args
 
 def get_md(path:str, categories:list[str], depth:int) -> list[dict]:
@@ -355,7 +356,7 @@ if __name__ == "__main__":
         # 新博客
         if cfg.is_new_blog(md_info["title"], md_info["categories"]):
             print(md_info["title"] + " is new!")
-            print(md_info)
+            # print(md_info)
             input("wait")
             # category 更新
             for cate in md_info["categories"]:
