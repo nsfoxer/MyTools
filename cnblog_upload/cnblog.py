@@ -256,6 +256,8 @@ class MetaWeblog:
             post["categories"] = temp_cate # 格式测试
             post["description"] = f.read()
         self.server.metaWeblog.editPost(postid, self.username, self.passwd, post, True)
+        # 暂停30s，博客园要求30s才可以上传一次
+        time.sleep(31)
 
     def newPost(self, filename:str, title:str, categories:list, date:str) -> str:
         """
@@ -270,6 +272,8 @@ class MetaWeblog:
         post["categories"] = temp_cate # 格式测试
         post["title"] = title
         postid = self.server.metaWeblog.newPost(self.blogid, self.username, self.passwd, post, True)
+        # 暂停30s，博客园要求30s才可以上传一次
+        time.sleep(31)
         return postid
 
     def newCategory(self, name:str, description:str="") -> int:
@@ -357,7 +361,7 @@ if __name__ == "__main__":
         if cfg.is_new_blog(md_info["title"], md_info["categories"]):
             print(md_info["title"] + " is new!")
             # print(md_info)
-            input("wait")
+            # input("wait")
             # category 更新
             for cate in md_info["categories"]:
                 if cfg.is_new_category(cate):

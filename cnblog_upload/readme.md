@@ -60,3 +60,7 @@ optional arguments:
 
    `hello/Two/Three`路径下`[1-2].md`文件，属性为`Two`和`Three`，与`hello`路径下的md文件被视为不同文件。**但是**，`hello/Three/Two`路径下的`[1-2].md`被看作相同文件，属性相同，均为`Two`和`Three`。具体上传哪个位置的文件，依赖python中`os.path.listdir()`具体实现。
 
+## 已知问题
+
+1. 如果运行时，出现任何错误，请下次运行前需要删除`$HOME/.config/cnblog/bloginfo.conf`文件。造成此的原因是异常退出，不会保存更新的信息，导致旧信息使用，会造成重复上传。
+2. 每天最多更新（上传）100个博客，程序并未对此进行检测。可能会在未来更新中进行修复。
