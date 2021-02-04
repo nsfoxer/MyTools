@@ -192,12 +192,14 @@ class MetaWeblog:
     passwd = ""
     blogid = ""
     server = ""
+    config = "" # 用于异常发生时保存数据
 
-    def __init__(self, username:str, passwd:str, blogid:str, url:str):
+    def __init__(self, username, passwd, blogid, url, config:Config=0):
         self.username = username
-        self.passwd = passwd
-        self.blogid = blogid
-        self.server = xmlrpclib.ServerProxy(url)
+        self.passwd   = passwd
+        self.blogid   = blogid
+        self.server   = xmlrpclib.ServerProxy(url)
+        self.config   = config
 
     def delPost(self, postid):
         self.server.blogger.deletePost(self.appKey, postid, self.username, self.passwd, True)
@@ -248,6 +250,9 @@ class MetaWeblog:
         return blogsInfo
 
     def editPost(self, postid:str, filename:str, title:str, categories:list):
+        if self.config == 0:
+            print("fault error, config == 0, class MetaWeblog editPost()")
+            sys.exit(1)
         post = {}
         with open(filename) as f:
             post["title"] = title
@@ -255,14 +260,24 @@ class MetaWeblog:
             temp_cate.append("[Markdown]")
             post["categories"] = temp_cate # 格式测试
             post["description"] = f.read()
-        self.server.metaWeblog.editPost(postid, self.username, self.passwd, post, True)
-        # 暂停30s，博客园要求30s才可以上传一次
-        time.sleep(31)
+        # 异常检测
+        try:
+            self.server.metaWeblog.editPost(postid, self.username, self.passwd, post, True)
+        except xmlrpclib.Fault as err:
+            print("A Fault occurred: ", end="")
+            print(err)
+            print("\nSaving Data...")
+            self.config.saveData()
+            sys.exit(1)
 
     def newPost(self, filename:str, title:str, categories:list, date:str) -> str:
         """
         return: postid
         """
+        if self.config == 0:
+            print("fault error, config == 0, class MetaWeblog newPost()")
+            sys.exit(1)
+
         post = {}
         with open(filename, "r") as f:
             post["description"] = f.read()
@@ -271,12 +286,22 @@ class MetaWeblog:
         temp_cate.append("[Markdown]")
         post["categories"] = temp_cate # 格式测试
         post["title"] = title
-        postid = self.server.metaWeblog.newPost(self.blogid, self.username, self.passwd, post, True)
-        # 暂停30s，博客园要求30s才可以上传一次
-        time.sleep(31)
+        postid = 0
+        # 异常检测
+        try:
+            postid = self.server.metaWeblog.newPost(self.blogid, self.username, self.passwd, post, True)
+        except xmlrpclib.Fault as err:
+            print("A Fault occurred: ", end="")
+            print(err)
+            print("\nSaving Data...")
+            self.config.saveData()
+            sys.exit(1)
         return postid
 
     def newCategory(self, name:str, description:str="") -> int:
+        if self.config == 0:
+            print("fault error, config == 0, class MetaWeblog newCategory()")
+            sys.exit(1)
         wpCate = {}
         wpCate["name"] = name
         wpCate["description"] = description
@@ -350,7 +375,7 @@ def get_md(path:str, categories:list[str], depth:int) -> list[dict]:
 if __name__ == "__main__":
     path_arg = init_arg()
     cfg = Config()
-    weblog = MetaWeblog(cfg.username, cfg.passwd, cfg.blogid, cfg.url)
+    weblog = MetaWeblog(cfg.username, cfg.passwd, cfg.blogid, cfg.url, cfg)
     # for bloginfo in cfg.blogsInfo:
     #     print("delete " + bloginfo["title"] + "!")
     #     weblog.delPost(bloginfo["postid"])
