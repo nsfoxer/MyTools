@@ -42,7 +42,9 @@ pic_upload() {
 	pic_md5=$(md5sum ${file} | awk '{print $1}')
 	pic_status=$("${location}/ossutil" ls "${oss_url}/${pic_md5}.png" | grep "Object Number is:" | awk '{print $4}')
 	if [[ ${pic_status} -eq 0 ]]; then
-		# 如果不存在则上传
+		# 不存在图片
+		# 使用imagemagic给图片添加阴影
+		convert "${file}" \( +clone -background black -shadow 60x6+5+5 \) +swap -background white -layers merge +repage "${file}"
 		"${location}/ossutil" cp ${file} "${oss_url}/${pic_md5}.png" > /dev/null
 	else
 		echo "${file} is existed"
