@@ -30,5 +30,5 @@ $ ./init.sh
 
 在typora配置中，自定义命令选择程序oss_upload.sh（例：~/mbin/oss_pic/oss_upload.sh）
 
-![image-20200727234008660](https://nsfoxer-oss.oss-cn-beijing.aliyuncs.com/img/1595864408777727142.png)
+![image-20210705110124977](https://nsfoxer-oss.oss-cn-beijing.aliyuncs.com/img/20c7de0247fdf86fc1d5263f4bd69f0f.png)
 
