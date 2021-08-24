@@ -32,3 +32,7 @@ $ ./init.sh
 
 ![image-20210705110124977](https://nsfoxer-oss.oss-cn-beijing.aliyuncs.com/img/20c7de0247fdf86fc1d5263f4bd69f0f.png)
 
+## 问题
+
+2021年 08月 24日 发现，当上传的图片路径带空格时，无法正确处理。需修复。
+
