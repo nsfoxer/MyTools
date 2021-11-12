@@ -10,21 +10,34 @@
 
 - 上传本地图片
 - 上传其他http图片
-- 给图片增加阴影效果
+- 给图片增加阴影效果,使其看起来有立体感（☺）
+- 将png转为webp，降低文件体积
+
+## 依赖
+
+- imagemagick
 
 ## 安装
 
-找到一个合适的地方
+1. 安装依赖：
 
-```bash
-git clone https://github.com/muwuren/ossutil_picture
-```
+   ```shell
+   # archlinux 系列发行版
+   sudo pacman -S imagemagick
+   ```
 
-初始化运行（用来初始化ossutil的，以及上传error.png）
+2. 找到一个合适的地方
+   
 
-```bash
-$ ./init.sh
-```
+    ```bash
+    git clone https://github.com/muwuren/ossutil_picture
+    ```
+    
+3. 初始化运行（用来初始化ossutil的，以及上传error.png）
+
+    ```bash
+    $ ./init.sh
+    ```
 
 ## 配置
 
