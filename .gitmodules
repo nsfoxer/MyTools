@@ -1,0 +1,3 @@
+[submodule "cnblog_upload/rust/cnblog"]
+	path = cnblog_upload/rust/cnblog
+	url = https://github.com/nsfoxer/cnblog
