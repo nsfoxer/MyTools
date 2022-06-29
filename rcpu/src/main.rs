@@ -7,7 +7,8 @@ use std::{fs, thread};
 use libc::{sysconf, _SC_CLK_TCK};
 use notify_rust::{Notification, Timeout};
 use clap::Parser;
-
+use env_logger;
+use log::info;
 
 static CPU_FILE_PATH: &str = "/proc/stat";
 
@@ -20,7 +21,7 @@ struct Args {
     interval: usize,
     
     /// Seconds to notify timeout
-    #[clap(short, long, value_parser, default_value_t = 10)]
+    #[clap(long, value_parser, default_value_t = 10)]
     timeout: u32,
 
     /// Threshold CPU usage, only when all cpu usage more than this value, can notify 
@@ -35,6 +36,7 @@ fn c_sysconf() -> i64 {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
+    env_logger::init();
     // 1. init data
     // 1.1 get split time (ms)
     let c = c_sysconf();
@@ -48,7 +50,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     loop {
         // 2. measure cpu usage
         let cpu_usage = measure_cpu_usage(&duration, &mut cpu_f)?;
-        println!("Current CPU usage: {cpu_usage}");
+        info!("Current CPU usage: {cpu_usage}");
 
         // 3. if cpu usage is less than threshold, ingnore
         if cpu_usage < args.threshold {
@@ -136,7 +138,7 @@ fn notify(max_id: usize, max_usage: usize, cmd: String, timeout: u32) {
         .hint(notify_rust::Hint::Urgency(notify_rust::Urgency::Normal))
         .timeout(Timeout::Milliseconds(timeout * 1000))
         .show().unwrap();
-    println!("Find High CPU Usage Task: {cmd}[{max_id}] --> {max_usage}");
+    info!("Find High CPU Usage Task: {cmd}[{max_id}] --> {max_usage}");
 }
 
 // get comm by task id
