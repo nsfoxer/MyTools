@@ -45,22 +45,23 @@ pic_upload() {
 	# 不存在图片
 		# 不对gif图片使用imagemagic给图片添加阴影
 		filetype=${file##*.}
-		if [[ ${filetype} != "gif" ]]; then
+		if [[ ${filetype} == "png" || ${filetype} == "jpg" ]]; then
 			convert "${file}" \( +clone -background black -shadow 60x6+5+5 \) +swap -background white -layers merge +repage "${file}"
 			# png图片体积较大，此处将其转为webp格式
 			if [[ ${filetype} == "png" ]]; then
 				temp_file=${file}
 				file="${file%.*}.webp"
+				filetype="webp"
 				convert ${temp_file} "${file}"
 			fi
 		fi
-		"${location}/ossutil" cp ${file} "${oss_url}/${pic_md5}.png" > /dev/null
+		"${location}/ossutil" cp ${file} "${oss_url}/${pic_md5}.${filetype}" > /dev/null
 	else
 		echo "${file} is existed"
 	fi
 
 	if [[ $? == 0 ]]; then
-		echo "https://${url}/${pic_md5}.png"
+		echo "https://${url}/${pic_md5}.${filetype}"
 	else
 		echo "https://${err_img}"
 	fi
