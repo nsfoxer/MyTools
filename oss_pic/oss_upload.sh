@@ -39,12 +39,12 @@ http_check(){
 # 本地图片上传
 pic_upload() {
 	# 查询是否已存在该图片
+	filetype=${file##*.}
 	pic_md5=$(md5sum ${file} | awk '{print $1}')
-	pic_status=$("${location}/ossutil" ls "${oss_url}/${pic_md5}.png" | grep "Object Number is:" | awk '{print $4}')
+	pic_status=$("${location}/ossutil" ls "${oss_url}/${pic_md5}.${filetype}" | grep "Object Number is:" | awk '{print $4}')
 	if [[ ${pic_status} -eq 0 ]]; then
 	# 不存在图片
 		# 不对gif图片使用imagemagic给图片添加阴影
-		filetype=${file##*.}
 		if [[ ${filetype} == "png" || ${filetype} == "jpg" ]]; then
 			convert "${file}" \( +clone -background black -shadow 60x6+5+5 \) +swap -background white -layers merge +repage "${file}"
 			# png图片体积较大，此处将其转为webp格式
